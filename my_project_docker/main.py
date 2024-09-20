@@ -25,6 +25,7 @@ from fastapi.responses import JSONResponse, FileResponse
 
 from fastapi import Depends, FastAPI, Body
 
+
 console = Console()
 
 # строка подключения к БД
@@ -32,7 +33,6 @@ SQLALCHEMY_DATABASE_URL = 'postgresql://postgres:123@localhost/my_db_notes'
 
 # создание движка
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
-
 
 # создаем базовый класс для моделей
 class Base(DeclarativeBase): pass
@@ -46,7 +46,6 @@ class Users(Base):
     username = Column(String)
     password = Column(String, )
 
-
 class Notes(Base):
     __tablename__ = "notes"
 
@@ -54,10 +53,8 @@ class Notes(Base):
     id_notes = Column(Integer, primary_key=True, index=True)
     text = Column(String, )
 
-
 # создаем сессии подключения к бд
 SessionLocal = sessionmaker(autoflush=False, bind=engine)
-
 
 def get_db():
     db = SessionLocal()
@@ -66,13 +63,11 @@ def get_db():
     finally:
         db.close()
 
-
 db_users = SessionLocal()
 db_users.query(Users)
 
 # получение всех объектов db_users
 people = db_users.query(Users).all()
-
 
 # --------------------------------------------------------------------------
 # Models and Data
@@ -89,7 +84,6 @@ def get_user(username: str):
         return user[0]
     return None
 
-
 # --------------------------------------------------------------------------
 # Setup FastAPI
 # --------------------------------------------------------------------------
@@ -99,11 +93,9 @@ class Settings:
     ACCESS_TOKEN_EXPIRE_MINUTES = 30  # in mins
     COOKIE_NAME = "access_token"
 
-
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 settings = Settings()
-
 
 # --------------------------------------------------------------------------
 # Authentication logic
@@ -330,12 +322,12 @@ def login_get():
     response.delete_cookie(settings.COOKIE_NAME)
     return response
 
-
 @app.get("/notes/all")
 def get_notes(db: Session = Depends(get_db), user: User = Depends(get_current_user_from_token)):
     note = db.query(Notes).all()
     notes = db.query(Notes).filter_by(id_users=user.id_users).all()
     return notes
+
 
 
 @app.get("/notes/all/{id}")
@@ -347,6 +339,7 @@ def get_note(id, db: Session = Depends(get_db)):
         return JSONResponse(status_code=404, content={"message": "Заметка не найдена"})
     # если пользователь найден, отправляем его
     return note
+
 
 
 @app.post("/notes/all")
@@ -364,12 +357,14 @@ def edit_person(data=Body(), db: Session = Depends(get_db)):
     # получаем заметку по id
     print(data)
     note = db.query(Notes).filter(Notes.id_notes == data["id_notes"]).first()
-    # если не найден, отправляем статусный код и сообщение об ошибке2
+    # если не найден, отправляем статусный код и сообщение об ошибке
     if note == None:
         return JSONResponse(status_code=404, content={"message": "Заметка не найдена"})
     # если заметка найдена, изменяем ее данные и отправляем обратно клиенту
     note.text = data["text"]
-    # note.name = speller.spelled(data["name"])
+    #note.name = speller.spelled(data["name"])
     db.commit()  # сохраняем изменения
     db.refresh(note)
     return note
+
+

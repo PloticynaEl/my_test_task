@@ -2,177 +2,170 @@
 <html>
 
 <body>
-    <h1 style="margin-top: 0; margin-bottom: 2rem; font-weight: 900; font-size: 2rem">
+  <h1 style="margin-top: 0; margin-bottom: 2rem; font-weight: 900; font-size: 2rem">
     Сервис для создания Ваших заметок
     </h1>
 
-    <div>
-        <p style="text-align: left; margin-top: 1rem; font-size: 1.5rem; font-weight: 600; color:#4EBA4E">
-        Оставь запись здесь!
-        </p>
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">
+  <div>
+    <p style="text-align: left; margin-top: 1rem; font-size: 1.5rem; font-weight: 600; color:#4EBA4E">
+      Оставь запись здесь!
+    </p>
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">
                     Новая запись:
 
                 </h5>
-                <!--
+        <!--
                 <div class="form-group">
                     <textarea class="form-control"
                         id="addTxt" rows="7">
                     </textarea>
                 </div> -->
-                <input type="hidden" id="noteId" />
+        <input type="hidden" id="noteId" />
         <p>
-            <input id="noteText" />
+          <input id="noteText" />
         </p>
 
-            </div>
-        </div>
-        <hr>
-        <button class="btn btn-primary"
-                    id="addBtn" style=
-                    "background-color:green">
-                    Добавить
-                </button>
-        <h1 style="text-align: left; margin-top: 1rem; font-size: 1.5rem; font-weight: 600; color:#4EBA4E">Все Ваши заметки:</h1>
-        <hr>
-
-
+      </div>
     </div>
-    <table>
-        <thead><tr><th>Заметка</th><th></th></tr></thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <script>
-    // Получение всех заметок
-        async function getNotes() {
-            // отправляет запрос и получаем ответ
-            const response = await fetch("/notes/all", {
-                method: "GET",
-                headers: { "Accept": "application/json" }
-            });
-            // если запрос прошел нормально
-            if (response.ok === true) {
-                // получаем данные
-                const notes = await response.json();
-                const rows = document.querySelector("tbody");
-                // добавляем полученные элементы в таблицу
-                notes.forEach(note => rows.append(row(note)));
-            }
-        }
-        // Получение одного пользователя
-        async function getNote(id_notes) {
-            const response = await fetch(`/notes/all/${id_notes}`, {
-                method: "GET",
-                headers: { "Accept": "application/json" }
-            });
-            if (response.ok === true) {
-                const note = await response.json();
-                document.getElementById("noteId").value = note.id_notes;
-                //document.getElementById("userId").value = note.id_users;
-                document.getElementById("noteText").value = note.text;
-            }
-            else {
-                // если произошла ошибка, получаем сообщение об ошибке
-                const error = await response.json();
-                console.log(error.message); // и выводим его на консоль
-            }
-        }
-        // Добавление пользователя
-        async function createNote(noteId, userId, noteText) {
-
-            const response = await fetch("notes/all", {
-                method: "POST",
-                headers: { "Accept": "application/json", "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    id_notes: noteId,
-                    id_users: userId,
-                    text: noteText
-                })
-            });
-            if (response.ok === true) {
-                const note = await response.json();
-                document.querySelector("tbody").append(row(note));
-            }
-            else {
-                const error = await response.json();
-                console.log(error.message);
-            }
-        }
-        // Изменение записки
-        async function editNote(noteId, userId, noteText) {
-            const response = await fetch("/notes/all/${noteId}", {
-                method: "PUT",
-                headers: { "Accept": "application/json", "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    id_notes: noteId,
-                    id_users: userId,
-                    text: noteText
-                })
-            });
-            if (response.ok === true) {
-                const note = await response.json();
-                document.querySelector(`tr[data-rowid='${note.id_notes}']`).replaceWith(row(note));
-            }
-            else {
-                const error = await response.json();
-                console.log(error.message);
-            }
-        }
-
-        // сброс данных формы после отправки
-        function reset() {
-            document.getElementById("noteId").value =
-            document.getElementById("noteText").value =
-            document.getElementById("userId").value = "";
-        }
-        // создание строки для таблицы
-        function row(note) {
-
-            const tr = document.createElement("tr");
-            tr.setAttribute("data-rowid", note.id_notes);
-
-            const textTd = document.createElement("td");
-            textTd.append(note.text); // ТЕКСТ ЗАМЕТКИ
-            tr.append(textTd);
-
-            const linksTd = document.createElement("td");
-
-            const editLink = document.createElement("button");
-            editLink.append("Изменить");
-            editLink.addEventListener("click", async() => await getNote(note.id_notes));
-            linksTd.append(editLink);
-
-            tr.appendChild(linksTd);
-
-            return tr;
-        }
-
-
-        // отправка формы
-        document.getElementById("addBtn").addEventListener("click", async () => {
-
-            const id_notes = document.getElementById("noteId").value;
-            const id_users = document.getElementById("userId").value;
-            const text = document.getElementById("noteText").value;
-
-            await editNote(id_notes, id_users, text);
-
-        });
-
-        // загрузка пользователей
-        getNotes();
-    </script>
-
     <hr>
-{% include '_site_map.html' %}
+    <button class="btn btn-primary" id="addBtn" style="background-color:green">
+      Добавить
+    </button>
+    <h1 style="text-align: left; margin-top: 1rem; font-size: 1.5rem; font-weight: 600; color:#4EBA4E">Все Ваши заметки:</h1>
+    <hr>
+
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Заметка</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    </tbody>
+  </table>
+
+  <script>
+    // Получение всех заметок
+    async function getNotes() {
+      // отправляет запрос и получаем ответ
+      const response = await fetch("/notes/all", {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+      // если запрос прошел нормально
+      if (response.ok === true) {
+        // получаем данные
+        const notes = await response.json();
+        const rows = document.querySelector("tbody");
+        // добавляем полученные элементы в таблицу
+        notes.forEach(note => rows.append(row(note)));
+      }
+    }
+    // Получение одного пользователя
+    async function getNote(id_notes) {
+      const response = await fetch(`/notes/all/${id_notes}`, {
+        method: "GET",
+        headers: {
+          "Accept": "application/json"
+        }
+      });
+      if (response.ok === true) {
+        const note = await response.json();
+        document.getElementById("noteId").value = note.id_notes;
+        //document.getElementById("userId").value = note.id_users;
+        document.getElementById("noteText").value = note.text;
+      } else {
+        // если произошла ошибка, получаем сообщение об ошибке
+        const error = await response.json();
+        console.log(error.message); // и выводим его на консоль
+      }
+    }
+    // Добавление пользователя
+    async function createNote(noteId, userId, noteText) {
+      const response = await fetch("notes/all", {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id_notes: noteId,
+          id_users: userId,
+          text: noteText
+        })
+      });
+      if (response.ok === true) {
+        const note = await response.json();
+        document.querySelector("tbody").append(row(note));
+      } else {
+        const error = await response.json();
+        console.log(error.message);
+      }
+    }
+    // Изменение записки
+    async function editNote(noteId, userId, noteText) {
+      const response = await fetch("/notes/all/${noteId}", {
+        method: "PUT",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          id_notes: noteId,
+          id_users: userId,
+          text: noteText
+        })
+      });
+      if (response.ok === true) {
+        const note = await response.json();
+        document.querySelector(`tr[data-rowid='${note.id_notes}']`).replaceWith(row(note));
+      } else {
+        const error = await response.json();
+        console.log(error.message);
+      }
+    }
+    // сброс данных формы после отправки
+    function reset() {
+      document.getElementById("noteId").value =
+        document.getElementById("noteText").value =
+        document.getElementById("userId").value = "";
+    }
+    // создание строки для таблицы
+    function row(note) {
+      const tr = document.createElement("tr");
+      tr.setAttribute("data-rowid", note.id_notes);
+      const textTd = document.createElement("td");
+      textTd.append(note.text); // ТЕКСТ ЗАМЕТКИ
+      tr.append(textTd);
+      const linksTd = document.createElement("td");
+      const editLink = document.createElement("button");
+      editLink.append("Изменить");
+      editLink.addEventListener("click", async() => await getNote(note.id_notes));
+      linksTd.append(editLink);
+      tr.appendChild(linksTd);
+      return tr;
+    }
+    // отправка формы
+    document.getElementById("addBtn").addEventListener("click", async() => {
+      const id_notes = document.getElementById("noteId").value;
+      const id_users = document.getElementById("userId").value;
+      const text = document.getElementById("noteText").value;
+      await editNote(id_notes, id_users, text);
+    });
+    // загрузка пользователей
+    getNotes();
+  </script>
+
+  <hr> {% include '_site_map.html' %}
 
 </body>
 
 </html>
-
 
 }
