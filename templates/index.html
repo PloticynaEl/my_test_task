@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+
+<body>
+
+<h1 style="margin-top: 0; margin-bottom: 2rem; font-weight: 900; font-size: 2rem">
+    Сервис для создания Ваших заметок
+</h1>
+
+<p style="text-align: left; margin-top: 1rem; font-size: 1.5rem; font-weight: 600; color:#4EBA4E">
+    Наш сервис предлагает удобный и простой способ создания заметок!
+</p>
+
+{% if user %}
+    <h2>Вы прошли аутентификацию :)</h2>
+    <p>
+        Добро пожаловать, {{ user.username }}!
+    </p>
+    <p>
+        Чтобы просмотреть свои заметки, перейдите в раздел <a href="/notes">«Заметки»</a>!
+    </p>
+{% else %}
+    <h2>Вы ещё не прошли аутентификацию :(</h2>
+    <p>
+        Пожалуйста перейдите по ссылке
+        <a href="/auth/login" class="btn">Войти</a>!
+    </p>
+{% endif %}
+
+<hr>
+
+{% include '_site_map.html' %}
+</body>
+
+</html>
